@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ccs</title>
+    <title>点击显示图片</title>
     <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #f0f4f8 0%, #e0e8f0 100%);
+            background-color: #ff0000;
             font-family: 'Arial', sans-serif;
             margin: 0;
             overflow: hidden;
             position: relative;
+            padding: 0; /* 移除留白 */
         }
         body::before {
             content: "";
@@ -24,8 +25,16 @@
             width: 100%;
             height: 100%;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVQYV2P8z8DwHwAFBQIAX8E8b6XUvh1gAAAABJRU5ErkJggg==') repeat;
-            opacity: 0.1;
+            opacity: 0.05;
             z-index: -1;
+        }
+        .text-overlay {
+            position: absolute;
+            color: #ffff00; /* 黄色 ccs 字样 */
+            font-size: calc(20px + 1vw); /* 增大 ccs 字样大小 */
+            user-select: none;
+            pointer-events: none;
+            animation: float 10s infinite ease-in-out;
         }
         .container {
             text-align: center;
@@ -36,25 +45,29 @@
             align-items: center;
             width: 100%;
             max-width: 100vw;
-            padding: 10px;
+            padding: 0; /* 移除留白 */
             box-sizing: border-box;
+            position: relative;
+            z-index: 1;
         }
         .character {
-            font-size: calc(40px + 2vw);
+            font-size: clamp(15vh, 25vw, 40vh); /* 调整为适中范围，始终在屏幕内 */
             margin: 10px;
             cursor: pointer;
-            color: #333;
+            color: #fff;
             transition: all 0.3s ease;
             padding: 10px;
             position: relative;
             overflow: hidden;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            line-height: 1;
         }
         .character::after {
             content: "";
             position: absolute;
             width: 0;
             height: 0;
-            background: rgba(0, 123, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             top: 50%;
             left: 50%;
@@ -67,9 +80,9 @@
             height: 200%;
         }
         .character:hover {
-            color: #007bff;
+            color: #00ff00;
             transform: scale(1.2) rotate(5deg);
-            text-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
         }
         .popup {
             display: none;
@@ -92,7 +105,7 @@
             max-width: 80vw;
             max-height: 80vh;
             border-radius: 5px;
-            background-color: #ff3333; /* 照片背景设为红色 */
+            background-color: #ff3333;
             padding: 10px;
         }
         .popup.show {
@@ -116,9 +129,16 @@
             from { transform: translate(-50%, -60%) scale(1); }
             to { transform: translate(-50%, -50%) scale(1); }
         }
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(5vw, 5vh) rotate(5deg); }
+            50% { transform: translate(-5vw, -5vh) rotate(-5deg); }
+            75% { transform: translate(3vw, -3vh) rotate(3deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
         @media screen and (max-width: 600px) {
             .character {
-                font-size: calc(30px + 3vw);
+                font-size: clamp(15vh, 25vw, 40vh); /* 保持适中范围 */
                 margin: 8px;
                 padding: 8px;
             }
@@ -129,7 +149,7 @@
         }
         @media screen and (max-width: 400px) {
             .character {
-                font-size: calc(24px + 3vw);
+                font-size: clamp(15vh, 25vw, 40vh); /* 保持适中范围 */
                 margin: 5px;
             }
         }
@@ -142,15 +162,27 @@
         <span class="character" onclick="showImage('image3')">生</span>
     </div>
     <div id="image1" class="popup">
-        <img src="images/ab6761610000e5eb85b136901d399e485ba6874c.jpg" alt="陈的图片">
+        <img src="https://via.placeholder.com/300x200?text=陈" alt="陈的图片">
     </div>
     <div id="image2" class="popup">
-        <img src="images/d2f52eb5-fd4f-4b6c-b5f8-2e9ce23101b0_731AEC3675777303B355364A2BA328D1E4AEFC76_w1719_h2579.jpg" alt="楚的图片">
+        <img src="https://via.placeholder.com/300x200?text=楚" alt="楚的图片">
     </div>
     <div id="image3" class="popup">
-        <img src="images/R.jpg" alt="生的图片">
+        <img src="https://via.placeholder.com/300x200?text=生" alt="生的图片">
     </div>
     <script>
+        const variations = ["ccs", "CCS", "cCs", "CCs", "ccS", "Ccs"];
+        for (let i = 0; i < 50; i++) {
+            const span = document.createElement("span");
+            span.className = "text-overlay";
+            span.textContent = variations[Math.floor(Math.random() * variations.length)];
+            span.style.left = Math.random() * 100 + "vw";
+            span.style.top = Math.random() * 100 + "vh";
+            span.style.fontSize = Math.random() * 30 + 20 + "px"; /* 增大 ccs 字样范围 */
+            span.style.opacity = Math.random() * 0.3 + 0.1;
+            document.body.appendChild(span);
+        }
+
         function showImage(id) {
             const popups = document.querySelectorAll('.popup');
             popups.forEach(popup => {
