@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ccs</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .character {
+            font-size: 300px;
+            margin: 20px;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .character:hover {
+            color: #007bff;
+            transform: scale(1.2);
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .popup img {
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 5px;
+        }
+        .popup.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="character" onclick="showImage('image1')">陈</span>
+        <span class="character" onclick="showImage('image2')">楚</span>
+        <span class="character" onclick="showImage('image3')">生</span>
+    </div>
+    <div id="image1" class="popup">
+        <img src="images/ab6761610000e5eb85b136901d399e485ba6874c.jpg" alt="陈的图片">
+    </div>
+    <div id="image2" class="popup">
+        <img src="images/d2f52eb5-fd4f-4b6c-b5f8-2e9ce23101b0_731AEC3675777303B355364A2BA328D1E4AEFC76_w1719_h2579.jpg" alt="楚的图片">
+    </div>
+    <div id="image3" class="popup">
+        <img src="images/R.jpg" alt="生的图片">
+    </div>
+    <script>
+        function showImage(id) {
+            // 隐藏所有弹窗
+            document.querySelectorAll('.popup').forEach(popup => {
+                popup.classList.remove('show');
+            });
+            // 显示点击的图片
+            const popup = document.getElementById(id);
+            popup.classList.add('show');
+            // 点击弹窗关闭
+            popup.onclick = () => {
+                popup.classList.remove('show');
+            };
+        }
+    </script>
+</body>
+</html>
