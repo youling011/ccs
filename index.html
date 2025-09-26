@@ -10,10 +10,22 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f4f8;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e0e8f0 100%);
             font-family: 'Arial', sans-serif;
             margin: 0;
             overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVQYV2P8z8DwHwAFBQIAX8E8b6XUvh1gAAAABJRU5ErkJggg==') repeat;
+            opacity: 0.1;
+            z-index: -1;
         }
         .container {
             text-align: center;
@@ -28,23 +40,43 @@
             box-sizing: border-box;
         }
         .character {
-            font-size: calc(40px + 2vw); /* 动态字体大小 */
+            font-size: calc(40px + 2vw);
             margin: 10px;
             cursor: pointer;
             color: #333;
-            transition: color 0.3s, transform 0.3s;
+            transition: all 0.3s ease;
             padding: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .character::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            background: rgba(0, 123, 255, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+            z-index: -1;
+        }
+        .character:hover::after {
+            width: 200%;
+            height: 200%;
         }
         .character:hover {
             color: #007bff;
-            transform: scale(1.2);
+            transform: scale(1.2) rotate(5deg);
+            text-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
         }
         .popup {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0);
             background-color: rgba(0, 0, 0, 0.8);
             padding: 15px;
             border-radius: 10px;
@@ -52,6 +84,7 @@
             max-height: 90vh;
             overflow: auto;
             z-index: 1000;
+            animation: popupOpen 0.3s ease forwards;
         }
         .popup img {
             width: 100%;
@@ -59,12 +92,29 @@
             max-width: 80vw;
             max-height: 80vh;
             border-radius: 5px;
-            object-fit: contain;
+            background-color: #ff3333; /* 照片背景设为红色 */
+            padding: 10px;
         }
         .popup.show {
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: popupOpen 0.3s ease forwards, slideIn 0.5s ease;
+        }
+        .popup.close {
+            animation: popupClose 0.3s ease forwards;
+        }
+        @keyframes popupOpen {
+            from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        @keyframes popupClose {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            to { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+        @keyframes slideIn {
+            from { transform: translate(-50%, -60%) scale(1); }
+            to { transform: translate(-50%, -50%) scale(1); }
         }
         @media screen and (max-width: 600px) {
             .character {
@@ -102,16 +152,18 @@
     </div>
     <script>
         function showImage(id) {
-            // 隐藏所有弹窗
-            document.querySelectorAll('.popup').forEach(popup => {
+            const popups = document.querySelectorAll('.popup');
+            popups.forEach(popup => {
                 popup.classList.remove('show');
+                popup.classList.add('close');
+                setTimeout(() => popup.classList.remove('close'), 300);
             });
-            // 显示点击的图片
             const popup = document.getElementById(id);
             popup.classList.add('show');
-            // 点击弹窗关闭
             popup.onclick = () => {
                 popup.classList.remove('show');
+                popup.classList.add('close');
+                setTimeout(() => popup.classList.remove('close'), 300);
             };
         }
     </script>
